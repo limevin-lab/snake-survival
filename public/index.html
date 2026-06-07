@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🐍 Snake Survival</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Start screen -->
+    <section id="start-screen" class="screen">
+      <h1>🐍 Snake Survival</h1>
+      <p class="tagline">Outlast your rival. Survive past 2:00 for hard mode.</p>
+      <form id="join-form">
+        <input id="nickname" type="text" maxlength="16" placeholder="Enter your nickname" autocomplete="off" required />
+        <button type="submit">Play</button>
+      </form>
+      <p class="hint">Move with <b>Arrow keys</b> or <b>WASD</b>. If nobody else joins in 5s, you'll face the AI.</p>
+
+      <div class="leaderboard">
+        <h2>🏆 Leaderboard</h2>
+        <ol id="leaderboard-list"><li class="empty">No scores yet — be the first!</li></ol>
+      </div>
+    </section>
+
+    <!-- Game screen -->
+    <section id="game-screen" class="screen hidden">
+      <div id="hud">
+        <div class="hud-player" id="hud-p0"><span class="dot" style="background:#4ade80"></span><span class="name">—</span> <span class="score">0</span></div>
+        <div class="hud-center">
+          <div id="level">Lv 1</div>
+          <div id="timer">0:00</div>
+        </div>
+        <div class="hud-player" id="hud-p1"><span class="score">0</span> <span class="name">—</span><span class="dot" style="background:#60a5fa"></span></div>
+      </div>
+      <canvas id="board" width="560" height="560"></canvas>
+      <div id="status-banner"></div>
+    </section>
+
+    <!-- Game over overlay -->
+    <section id="over-screen" class="screen hidden">
+      <h1>Round Over</h1>
+      <div id="results"></div>
+      <button id="play-again">Play again</button>
+      <div class="leaderboard">
+        <h2>🏆 Leaderboard</h2>
+        <ol id="leaderboard-list-2"></ol>
+      </div>
+    </section>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="client.js"></script>
+</body>
+</html>
