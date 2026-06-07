@@ -24,8 +24,8 @@ const socketRoom = new Map();  // socketId -> roomId
 let waitingRoom = null;        // a Room with one human waiting for a partner
 let waitTimer = null;
 
-function broadcastLeaderboard(target = io) {
-  target.emit('leaderboard', getTopScores(10));
+async function broadcastLeaderboard(target = io) {
+  target.emit('leaderboard', await getTopScores(10));
 }
 
 function cleanupRoom(roomId) {
@@ -60,12 +60,12 @@ function startRoom(room) {
   room.start();
 }
 
-function handleGameOver(roomId, results) {
+async function handleGameOver(roomId, results) {
   const room = rooms.get(roomId);
   // Persist human scores to the permanent leaderboard.
   for (const r of results) {
     if (!r.isAI && r.nickname) {
-      recordScore({
+      await recordScore({
         nickname: r.nickname,
         score: r.score,
         food: r.food,
@@ -74,7 +74,7 @@ function handleGameOver(roomId, results) {
       });
     }
   }
-  const board = getTopScores(10);
+  const board = await getTopScores(10);
   io.to(roomId).emit('gameover', { results, leaderboard: board });
   broadcastLeaderboard(); // refresh everyone's start-screen board
   // Tear the room down shortly after; clients re-queue via "play again".
@@ -83,7 +83,7 @@ function handleGameOver(roomId, results) {
 
 io.on('connection', (socket) => {
   // Send the current leaderboard immediately so the start screen is populated.
-  socket.emit('leaderboard', getTopScores(10));
+  getTopScores(10).then((board) => socket.emit('leaderboard', board));
 
   socket.on('join', (rawName) => {
     const nickname = String(rawName || '').trim().slice(0, 16) || 'Player';
