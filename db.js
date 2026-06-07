@@ -3,11 +3,15 @@
 import Database from 'better-sqlite3';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { mkdirSync } from 'fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Allow overriding the DB location (useful on hosts with a mounted persistent disk).
 const dbPath = process.env.DB_PATH || join(__dirname, 'leaderboard.db');
+// Ensure the target directory exists (e.g. a DB_PATH like /data/leaderboard.db
+// before the mounted disk has been provisioned) so we don't crash on startup.
+mkdirSync(dirname(dbPath), { recursive: true });
 const db = new Database(dbPath);
 
 db.pragma('journal_mode = WAL');
